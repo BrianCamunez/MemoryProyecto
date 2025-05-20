@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,6 +18,9 @@ const Header = () => {
         </Link>
         {/* Menú para pantallas medianas y grandes */}
         <div className="hidden md:flex gap-2">
+          <Button variant="link" asChild>
+            <Link href="/juego">juegar</Link>
+          </Button>
           <Button variant="link" asChild>
             <Link href="/login">Iniciar Sesión</Link>
           </Button>
