@@ -111,10 +111,6 @@ const GrupoTargeta = () => {
 
     return (
         <div className="flex flex-col items-center">
-            <div className="mb-4 space-x-4 text-xl font-bold">
-                <span>Tiempo: {tiempo}s</span>
-                <span>Puntuación: {puntuacion}</span>
-            </div>
 
             {juegoTerminado ? (
                 <div className="text-2xl font-bold text-red-500">
