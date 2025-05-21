@@ -11,7 +11,9 @@ const GrupoTargeta = () => {
         url: string;
     }
 
-    const [targetas, setTargetas] = useState<Targeta[]>([])
+    const [targetas, setTargetas] = useState<Targeta[]>([]) 
+    const [cartasGiradas, setCartasGiradas] = useState<number[]>([])
+    const [cartasEmparejadas, setCartasEmparejadas] = useState <number[]>([])
 
     const targetasArray = [
         {
@@ -70,6 +72,36 @@ const GrupoTargeta = () => {
         setTargetas(duplicatedCards)
     }, [])
 
+    const girarCarta = (id: number) => {
+
+        if(cartasGiradas.length >= 2 || cartasGiradas.includes(id) || cartasEmparejadas.includes(id)){
+            return
+        }
+
+        setCartasGiradas(prev => [...prev, id])
+
+    } 
+
+    useEffect(() => {
+        
+        if(cartasGiradas.length === 2){
+            const [primera,segunda] = cartasGiradas
+
+            const carta1 = targetas.find(carta => carta.id === primera)
+            const carta2 = targetas.find(carta => carta.id === segunda)
+
+            if(carta1?.nombre === carta2?.nombre){
+                setCartasEmparejadas(prev => [...prev, primera, segunda])
+            }
+
+            setTimeout(() => {
+                setCartasGiradas([])
+            }, 1000)
+
+        }
+        
+    }, [cartasGiradas, targetas])
+
     return (
         <div className="grid grid-cols-6 gap-4 p-4">
             {targetas.map((targeta) => (
@@ -77,6 +109,9 @@ const GrupoTargeta = () => {
                     key={targeta.id}
                     nombre={targeta.nombre}
                     url={targeta.url}
+                    girada={cartasGiradas.includes(targeta.id) || cartasEmparejadas.includes(targeta.id)}
+                    emparejada={cartasEmparejadas.includes(targeta.id)}
+                    onClick={() => girarCarta(targeta.id)}
                 />
             ))}
         </div>
