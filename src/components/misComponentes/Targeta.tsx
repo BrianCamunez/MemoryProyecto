@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { useState } from "react"
 import { useContador } from "@/app/context/ContadorContext"
 
@@ -29,7 +29,7 @@ const Targeta = ({ nombre, url, emparejada = false, girada, onClick }: TargetaPr
     }
 
     return (
-        <div className="relative w-[150px] h-[150px]">
+        <div className="relative w-[150px] h-[150px]" id={nombre}>
             <div className="absolute -top-2 -right-2 z-10 bg-black/80 text-white w-8 h-8 
                           rounded-full flex items-center justify-center text-s font-bold">
                 {clicks}

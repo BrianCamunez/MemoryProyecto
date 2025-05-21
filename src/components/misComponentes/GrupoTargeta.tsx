@@ -17,7 +17,7 @@ const GrupoTargeta = () => {
     const [cartasGiradas, setCartasGiradas] = useState<number[]>([])
     const [cartasEmparejadas, setCartasEmparejadas] = useState<number[]>([])
 
-    const { tiempo, juegoTerminado } = useTiempo();
+    const { juegoTerminado } = useTiempo();
     const { puntuacion, aumentarPuntuacion } = usePuntuacion();
 
 
