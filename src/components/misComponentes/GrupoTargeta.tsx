@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Targeta from "./Targeta"
+import { useTiempo } from "@/app/context/TiempoContext"
+import { usePuntuacion } from "@/app/context/PuntuacionContext"
 
 const GrupoTargeta = () => {
 
@@ -12,6 +14,12 @@ const GrupoTargeta = () => {
     }
 
     const [targetas, setTargetas] = useState<Targeta[]>([])
+    const [cartasGiradas, setCartasGiradas] = useState<number[]>([])
+    const [cartasEmparejadas, setCartasEmparejadas] = useState<number[]>([])
+
+    const { tiempo, juegoTerminado } = useTiempo();
+    const { puntuacion, aumentarPuntuacion } = usePuntuacion();
+
 
     const targetasArray = [
         {
@@ -70,15 +78,62 @@ const GrupoTargeta = () => {
         setTargetas(duplicatedCards)
     }, [])
 
+    const girarCarta = (id: number) => {
+
+        if (cartasGiradas.length >= 2 || cartasGiradas.includes(id) || cartasEmparejadas.includes(id)) {
+            return
+        }
+
+        setCartasGiradas(prev => [...prev, id])
+
+    }
+
+    useEffect(() => {
+
+        if (cartasGiradas.length === 2) {
+            const [primera, segunda] = cartasGiradas
+
+            const carta1 = targetas.find(carta => carta.id === primera)
+            const carta2 = targetas.find(carta => carta.id === segunda)
+
+            if (carta1?.nombre === carta2?.nombre) {
+                setCartasEmparejadas(prev => [...prev, primera, segunda])
+                aumentarPuntuacion()
+            }
+
+            setTimeout(() => {
+                setCartasGiradas([])
+            }, 1000)
+
+        }
+
+    }, [cartasGiradas, targetas])
+
     return (
-        <div className="grid grid-cols-6 gap-4 p-4">
-            {targetas.map((targeta) => (
-                <Targeta
-                    key={targeta.id}
-                    nombre={targeta.nombre}
-                    url={targeta.url}
-                />
-            ))}
+        <div className="flex flex-col items-center">
+            <div className="mb-4 space-x-4 text-xl font-bold">
+                <span>Tiempo: {tiempo}s</span>
+                <span>Puntuación: {puntuacion}</span>
+            </div>
+
+            {juegoTerminado ? (
+                <div className="text-2xl font-bold text-red-500">
+                    ¡Tiempo agotado! Puntuación final: {puntuacion}
+                </div>
+            ) : (
+                <div className="grid grid-cols-6 gap-4 p-4">
+                    {targetas.map((targeta) => (
+                        <Targeta
+                            key={targeta.id}
+                            nombre={targeta.nombre}
+                            url={targeta.url}
+                            girada={cartasGiradas.includes(targeta.id) || cartasEmparejadas.includes(targeta.id)}
+                            emparejada={cartasEmparejadas.includes(targeta.id)}
+                            onClick={() => girarCarta(targeta.id)}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
