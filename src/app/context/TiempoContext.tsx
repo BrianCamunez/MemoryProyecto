@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 
-interface TiempoContextType {
+export interface TiempoContextType {
     tiempo: number
     juegoTerminado: boolean
     reiniciarTiempo: () => void
@@ -10,7 +10,7 @@ interface TiempoContextType {
 
 const TiempoContext = createContext<TiempoContextType | undefined>(undefined)
 
-export function TiempoProvider({ children } : {children: React.ReactNode} ){
+export function TiempoProvider({ children } : {children: React.ReactNode}){
     const [tiempo, setTiempo] = useState(20)
     const [juegoTerminado, setJuegoTerminado] = useState(false)
 
@@ -46,4 +46,5 @@ export function TiempoProvider({ children } : {children: React.ReactNode} ){
 export const useTiempo = () => {
     const context = useContext(TiempoContext)
     if(!context) throw new Error('useTiempo debe usarse dentro de TiempoProvider')
+    return context
 }

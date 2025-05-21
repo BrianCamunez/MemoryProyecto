@@ -3,8 +3,10 @@
 import Header from "@/components/misComponentes/Header";
 import GrupoTargeta from "@/components/misComponentes/GrupoTargeta";
 import { ContadorProvider, useContador } from "@/app/context/ContadorContext";
+import { PuntuacionProvider } from "../context/PuntuacionContext";
+import { TiempoProvider } from "../context/TiempoContext";
 
-function ContadorTotal(){
+function ContadorTotal() {
     const { contadorGlobal } = useContador()
     return (
         <div className="p-4">
@@ -29,8 +31,13 @@ function ContenidoJuego() {
 
 export default function Juego() {
     return (
-        <ContadorProvider>
-            <ContenidoJuego />
-        </ContadorProvider>
+        <TiempoProvider>
+            <PuntuacionProvider>
+                <ContadorProvider>
+                    <ContenidoJuego />
+                </ContadorProvider>
+            </PuntuacionProvider>
+        </TiempoProvider>
+
     )
 }
