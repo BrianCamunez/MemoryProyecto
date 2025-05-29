@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Targeta from "./Targeta"
 import { useTiempo } from "@/app/context/TiempoContext"
 import { usePuntuacion } from "@/app/context/PuntuacionContext"
+import { useContador } from "@/app/context/ContadorContext"
 
 const GrupoTargeta = () => {
 
@@ -16,66 +17,42 @@ const GrupoTargeta = () => {
     const [targetas, setTargetas] = useState<Targeta[]>([])
     const [cartasGiradas, setCartasGiradas] = useState<number[]>([])
     const [cartasEmparejadas, setCartasEmparejadas] = useState<number[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
     const { juegoTerminado } = useTiempo();
     const { puntuacion, aumentarPuntuacion } = usePuntuacion();
+    const { contadorGlobal } = useContador();
 
-
-    const targetasArray = [
-        {
-            id: 1,
-            nombre: "Saber (Artoria Pendragon)",
-            url: "https://ucarecdn.com/aa65204a-a548-488e-9bac-38faa1bc9f16/-/preview/525x1000/"
-        },
-        {
-            id: 2,
-            nombre: "Archer (EMIYA)",
-            url: "https://ucarecdn.com/79166a35-0ffa-46b9-a7dc-70c3925eedca/-/preview/406x1000/"
-        },
-        {
-            id: 3,
-            nombre: "Saber Alter",
-            url: "https://ucarecdn.com/bf1ddc54-f4cc-4456-9059-3dee690d46c4/-/preview/525x1000/"
-        },
-        {
-            id: 4,
-            nombre: "Rider (Medusa)",
-            url: "https://ucarecdn.com/4c358ea9-bff2-4a47-8621-f791351bfcd2/-/preview/585x1000/"
-        },
-        {
-            id: 5,
-            nombre: "Kiritsugu Emiya",
-            url: "https://ucarecdn.com/97b2664c-88d2-4542-b895-a058f65a08c4/-/preview/362x619/"
-        },
-        {
-            id: 6,
-            nombre: "Saber (Lily)",
-            url: "https://ucarecdn.com/f9715fa0-af24-47ac-a2bb-94cd6a2e15e4/-/preview/250x300/"
-        },
-        {
-            id: 7,
-            nombre: "Gilles de Rais",
-            url: "https://ucarecdn.com/3abb8d37-c699-40f4-9bef-564c3a1f1cca/-/preview/504x1000/"
-        },
-        {
-            id: 8,
-            nombre: "Hassan of the Cursed Arm",
-            url: "https://ucarecdn.com/ff847a5c-abcc-4cbe-8abf-043e41650572/-/preview/779x1000/"
-        },
-        {
-            id: 9,
-            nombre: "Sir Lancelot",
-            url: "https://ucarecdn.com/681e6308-68a8-4b41-88a3-eccec012b155/-/preview/250x349/"
-        }
-    ]
 
     useEffect(() => {
-        // Duplicamos las cards y las mezclamos
-        const duplicatedCards = [...targetasArray, ...targetasArray]
-            .sort(() => Math.random() - 0.5)
-            .map((card, index) => ({ ...card, id: index }))
+        const fetchTargetas = async () => {
+            try {
+                const response = await fetch('https://m7uf4laravel-production.up.railway.app/api/targeta')
+                if (!response.ok) {
+                    throw new Error('Error al cargar las tarjetas')
+                }
+                const data = await response.json()
 
-        setTargetas(duplicatedCards)
+                // Seleccionamos 9 cartas aleatorias del array original
+                const randomCards = data
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 9);
+
+                // Duplicamos las 9 cartas seleccionadas y las mezclamos
+                const duplicatedCards = [...randomCards, ...randomCards]
+                    .sort(() => Math.random() - 0.5)
+                    .map((card: Targeta, index: number) => ({ ...card, id: index }));
+
+                setTargetas(duplicatedCards)
+                setLoading(false)
+            } catch (error) {
+                setError(error instanceof Error ? error.message : 'Error desconocido')
+                setLoading(false)
+            }
+        }
+
+        fetchTargetas()
     }, [])
 
     const girarCarta = (id: number) => {
@@ -109,13 +86,84 @@ const GrupoTargeta = () => {
 
     }, [cartasGiradas, targetas])
 
+    const datosPartida = {
+        clicks: contadorGlobal,
+        puntos: puntuacion,
+    };
+
+    console.log('Datos a enviar:', datosPartida) // Debug
+
+
+    const [mensaje, setMensaje] = useState("")
+
+    useEffect(() => {
+        const enviarDatos = async () => {
+            if (juegoTerminado) {
+
+                const token = localStorage.getItem('token')
+
+                if (!token) {
+                    setMensaje('Necesitas iniciar sesión para guardar la partida')
+                    return
+                }
+
+                console.log(datosPartida)
+
+                try {
+                    const response = await fetch('https://m7uf4laravel-production.up.railway.app/api/partidas', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(datosPartida)
+                    })
+
+                    const data = await response.json()
+
+                    console.log(data)
+
+                    if (response.ok) {
+                        setMensaje('Partida registrada exitosamente!')
+                    } else {
+                        setMensaje(data.message || 'Error en el registro')
+                    }
+                } catch (error) {
+                    if (error instanceof Error) {
+                        setMensaje(`Error al conectar con el servidor: ${error.message}`)
+                    } else {
+                        setMensaje('Error al conectar con el servidor')
+                    }
+                }
+            }
+        }
+
+        enviarDatos()
+    }, [juegoTerminado])
+
+    if (loading) {
+        return <div className="text-center">Cargando tarjetas...</div>
+    }
+
+    if (error) {
+        return <div className="text-center text-red-500">Error: {error}</div>
+    }
+
+
+
+
     return (
         <div className="flex flex-col items-center">
 
             {juegoTerminado ? (
-                <div className="text-2xl font-bold text-red-500">
-                    ¡Tiempo agotado! Puntuación final: {puntuacion}
-                </div>
+                <>
+                    <div className="text-2xl font-bold text-red-500">
+                        ¡Tiempo agotado! Puntuación final: {puntuacion}
+                    </div>
+                    <div className="mb-4 p-2 bg-blue-100 text-blue-700 rounded">
+                        {mensaje}
+                    </div>
+                </>
             ) : (
                 <div className="grid grid-cols-6 gap-4 p-4">
                     {targetas.map((targeta) => (

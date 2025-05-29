@@ -19,7 +19,10 @@ const Header = () => {
         {/* Menú para pantallas medianas y grandes */}
         <div className="hidden md:flex gap-2">
           <Button variant="link" asChild>
-            <Link href="/juego">juegar</Link>
+            <Link href="/partidas">Mis Partidas</Link>
+          </Button>
+          <Button variant="link" asChild>
+            <Link href="/juego">Jugar</Link>
           </Button>
           <Button variant="link" asChild>
             <Link href="/login">Iniciar Sesión</Link>
