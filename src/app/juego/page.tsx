@@ -1,6 +1,5 @@
 "use client"
 
-import Header from "@/components/misComponentes/Header";
 import GrupoTargeta from "@/components/misComponentes/GrupoTargeta";
 import { ContadorProvider, useContador } from "@/app/context/ContadorContext";
 import { PuntuacionProvider } from "../context/PuntuacionContext";
@@ -39,13 +38,6 @@ function PanelLateral() {
                         {contadorGlobal}
                     </div>
                 </div>
-
-
-                <button className="w-full py-4 px-6 border-2 rounded-xl 
-                                 text-xl font-semibold hover:bg-gray-100 
-                                 transition-colors">
-                    Empezar Partida
-                </button>
             </div>
         </aside>
     )
@@ -54,7 +46,6 @@ function PanelLateral() {
 function ContenidoJuego() {
     return (
         <>
-            <Header />
             <div className="flex">
 
                 <PanelLateral />

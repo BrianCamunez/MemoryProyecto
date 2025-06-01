@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import Header from "@/components/misComponentes/Header"
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -52,7 +51,6 @@ const Login = () => {
 
     return (
         <>
-            <Header />
             <div className="flex flex-col items-center justify-center min-h-screen p-4">
                 <Card className="w-full max-w-md">
                     <CardHeader>
