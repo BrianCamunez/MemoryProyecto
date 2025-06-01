@@ -4,7 +4,6 @@ import { useState } from 'react'
 import TargetasCrud from "../../components/misComponentes/TargetasCrud"
 import UsuariosCrud from '../../components/misComponentes/UsuariosCrud'
 import PartidasCrud from "../../components/misComponentes/PartidasCrud"
-import Header from '@/components/misComponentes/Header'
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState<'targetas' | 'usuarios' | 'partidas'>('targetas')

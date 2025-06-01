@@ -1,6 +1,5 @@
 "use client"
 
-import Header from "@/components/misComponentes/Header";
 import GrupoTargeta from "@/components/misComponentes/GrupoTargeta";
 import { ContadorProvider, useContador } from "@/app/context/ContadorContext";
 import { PuntuacionProvider } from "../context/PuntuacionContext";
