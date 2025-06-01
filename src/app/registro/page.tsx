@@ -54,7 +54,6 @@ const Registro = () => {
 
     return (
         <>
-            <Header />
             <div className="flex flex-col items-center justify-center min-h-screen p-4">
                 <Card className="w-full max-w-md">
                     <CardHeader>

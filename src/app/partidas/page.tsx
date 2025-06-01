@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Header from "@/components/misComponentes/Header"
 import {
     Table,
     TableBody,
@@ -96,7 +95,6 @@ const Partidas = () => {
 
     return (
         <>
-            <Header />
             <div className="flex justify-center px-4 py-10">
                 <div className="w-full max-w-4xl bg-white rounded-xl shadow-lg p-6">
                     {message && (

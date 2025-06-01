@@ -39,13 +39,6 @@ function PanelLateral() {
                         {contadorGlobal}
                     </div>
                 </div>
-
-
-                <button className="w-full py-4 px-6 border-2 rounded-xl 
-                                 text-xl font-semibold hover:bg-gray-100 
-                                 transition-colors">
-                    Empezar Partida
-                </button>
             </div>
         </aside>
     )
@@ -54,7 +47,6 @@ function PanelLateral() {
 function ContenidoJuego() {
     return (
         <>
-            <Header />
             <div className="flex">
 
                 <PanelLateral />

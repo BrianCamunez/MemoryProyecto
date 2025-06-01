@@ -34,12 +34,10 @@ const GrupoTargeta = () => {
                 }
                 const data = await response.json()
 
-                // Seleccionamos 9 cartas aleatorias del array original
                 const randomCards = data
                     .sort(() => Math.random() - 0.5)
                     .slice(0, 9);
 
-                // Duplicamos las 9 cartas seleccionadas y las mezclamos
                 const duplicatedCards = [...randomCards, ...randomCards]
                     .sort(() => Math.random() - 0.5)
                     .map((card: Targeta, index: number) => ({ ...card, id: index }));
@@ -91,7 +89,7 @@ const GrupoTargeta = () => {
         puntos: puntuacion,
     };
 
-    console.log('Datos a enviar:', datosPartida) // Debug
+    console.log('Datos a enviar:', datosPartida) 
 
 
     const [mensaje, setMensaje] = useState("")

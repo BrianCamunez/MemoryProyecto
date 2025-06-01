@@ -11,16 +11,30 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const Header = () => {
-  const [estaLogeado, setestaLogeado] = useState(false)
+  const [estaLogeado, setEstaLogeado] = useState(false)
+  const [esAdmin, setEsAdmin] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem("token")
-    setestaLogeado(!!token)
+    const user = localStorage.getItem("user")
+
+    setEstaLogeado(!!token)
+
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user)
+        setEsAdmin(parsedUser.role === "admin")
+      } catch {
+        setEsAdmin(false)
+      }
+    }
   }, [])
 
   const handleLogout = () => {
     localStorage.removeItem("token")
-    setestaLogeado(false)
+    localStorage.removeItem("user")
+    setEstaLogeado(false)
+    setEsAdmin(false)
     window.location.href = "/"
   }
 
@@ -40,8 +54,13 @@ const Header = () => {
               <Button variant="link" asChild>
                 <Link href="/juego">Jugar</Link>
               </Button>
-               <Button variant="link" asChild>
-                <Link href="/crud">CRUD</Link>
+              {esAdmin && (
+                <Button variant="link" asChild>
+                  <Link href="/crud">CRUD</Link>
+                </Button>
+              )}
+              <Button variant="link" asChild>
+                <Link href="/ranking">Ranking</Link>
               </Button>
               <Button variant="link" onClick={handleLogout}>
                 Cerrar Sesión
@@ -79,6 +98,11 @@ const Header = () => {
                   <DropdownMenuItem asChild>
                     <Link href="/juego">Jugar</Link>
                   </DropdownMenuItem>
+                  {esAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/crud">CRUD</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={handleLogout}>
                     Cerrar Sesión
                   </DropdownMenuItem>
