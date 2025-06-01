@@ -12,7 +12,7 @@ const Registro = () => {
         name: "",
         email: "",
         password: "",
-        role: "user"
+        role: "admin"
     })
     const [message, setMessage] = useState("")
 

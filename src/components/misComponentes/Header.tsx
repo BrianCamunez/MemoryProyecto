@@ -40,6 +40,9 @@ const Header = () => {
               <Button variant="link" asChild>
                 <Link href="/juego">Jugar</Link>
               </Button>
+               <Button variant="link" asChild>
+                <Link href="/crud">CRUD</Link>
+              </Button>
               <Button variant="link" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>
