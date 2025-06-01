@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table"
 
 type Partida = {
+    id: number
     duracion: string | null
     puntos: number
     clicks: number
@@ -60,6 +61,36 @@ const Partidas = () => {
         fetchPartidas()
     }, [])
 
+    const handleDelete = async (id: number) => {
+        const token = localStorage.getItem('token')
+
+        try {
+            const res = await fetch(`https://m7uf4laravel-production.up.railway.app/api/partidas/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+
+            const data = await res.json()
+
+            if (res.ok) {
+                setPartidas(prev => prev.filter(p => p.id !== id))
+                setMessage("🗑️ Partida eliminada correctament")
+            } else {
+                setMessage(data.message || "❌ Error al eliminar la partida")
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                setMessage(`❌ Error al conectar con el servidor: ${error.message}`)
+            } else {
+                setMessage("❌ Error inesperado")
+            }
+        }
+    }
+
+
     const totalPuntos = partidas.reduce((acc, p) => acc + p.puntos, 0)
     const totalClicks = partidas.reduce((acc, p) => acc + p.clicks, 0)
 
@@ -79,34 +110,45 @@ const Partidas = () => {
                             <TableCaption className="text-lg font-medium text-gray-600 mb-4">
                                 📊 Estadístiques recents de les meves partides
                             </TableCaption>
+
                             <TableHeader>
                                 <TableRow className="bg-blue-50">
-                                    <TableHead className="text-blue-800 font-semibold">⏱️ Duració</TableHead>
-                                    <TableHead className="text-blue-800 font-semibold">🎯 Punts</TableHead>
-                                    <TableHead className="text-right text-blue-800 font-semibold">🖱️ Clics</TableHead>
+                                    <TableHead className="text-blue-800 font-semibold text-left">🎯 Punts</TableHead>
+                                    <TableHead className="text-blue-800 font-semibold text-left">🖱️ Clics</TableHead>
+                                    <TableHead className="text-blue-800 font-semibold text-right">🗑️ Accions</TableHead>
                                 </TableRow>
                             </TableHeader>
+
                             <TableBody>
                                 {partidas.map((p, idx) => (
-                                    <TableRow key={idx} className={idx % 2 === 0 ? "bg-gray-50" : ""}>
-                                        <TableCell>{p.duracion ?? "N/A"}</TableCell>
+                                    <TableRow key={p.id} className={idx % 2 === 0 ? "bg-gray-50" : ""}>
                                         <TableCell className={p.puntos >= 1600 ? "text-green-600 font-semibold" : ""}>
                                             {p.puntos}
                                         </TableCell>
-                                        <TableCell className={`text-right ${p.clicks > 100 ? "text-red-500" : ""}`}>
+                                        <TableCell className={p.clicks > 100 ? "text-red-500" : ""}>
                                             {p.clicks}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <button
+                                                onClick={() => handleDelete(p.id)}
+                                                className="text-red-600 hover:text-red-800 transition-colors font-semibold"
+                                            >
+                                                Borrar
+                                            </button>
                                         </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
+
                             <TableFooter>
                                 <TableRow className="bg-gray-100">
-                                    <TableCell className="font-semibold">Total</TableCell>
-                                    <TableCell className="font-semibold text-green-700">{totalPuntos}</TableCell>
-                                    <TableCell className="text-right font-semibold text-red-700">{totalClicks}</TableCell>
+                                    <TableCell className="font-semibold text-green-700">Total: {totalPuntos}</TableCell>
+                                    <TableCell className="font-semibold text-red-700">Total: {totalClicks}</TableCell>
+                                    <TableCell />
                                 </TableRow>
                             </TableFooter>
                         </Table>
+
                     )}
                 </div>
             </div>
