@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { useState } from "react"
 import { useContador } from "@/app/context/ContadorContext"
 
@@ -29,26 +29,53 @@ const Targeta = ({ nombre, url, emparejada = false, girada, onClick }: TargetaPr
     }
 
     return (
-        <>
-            <Card onClick={mirarClicks} className={`cursor-pointer transition-all duration-300 ${girada ? 'bg-white' : 'bg-blue-500'}`}>
-                <CardTitle>{nombre}</CardTitle>
-                <CardContent>
-                    {
-                        girada ? (
-                            <div>
-                                <img src={url} alt={`Imagen de ${nombre}`} />
-                                <p>Clicks: {clicks}</p>
-                            </div>
-                        ) : (
-                            <div>
-                                <img src="https://empresas.blogthinkbig.com/wp-content/uploads/2019/11/Imagen3-245003649.jpg" alt={`Imagen de ${nombre}`} />
-                                <p>Clicks: {clicks}</p>
-                            </div>
-                        )
-                    }
+        <div className="relative w-[150px] h-[150px]" id={nombre}>
+            <div className="absolute -top-2 -right-2 z-10 bg-black/80 text-white w-8 h-8 
+                          rounded-full flex items-center justify-center text-s font-bold">
+                {clicks}
+            </div>
+            <Card 
+                onClick={mirarClicks}
+                className={`
+                    relative w-full h-full 
+                    transition-transform duration-500 ease-in-out
+                    shadow hover:shadow-lg cursor-pointer
+                    [transform-style:preserve-3d]
+                    ${girada ? '[transform:rotateY(180deg)]' : ''}
+                `}
+            >
+                {/* Cara frontal */}
+                <CardContent className={`
+                    absolute inset-0 p-0
+                    [backface-visibility:hidden]
+                    rounded-xl overflow-hidden
+                    bg-card
+                    ${emparejada ? 'border-2 border-green-500' : 'border-2 border-black'}
+                    [transform:rotateY(180deg)]
+                `}>
+                    <img 
+                        src={url} 
+                        alt={`Carta de memoria`}
+                        className="w-full h-full object-contain" 
+                    />
+                </CardContent>
+
+                {/* Cara trasera */}
+                <CardContent className={`
+                    absolute inset-0 p-0
+                    [backface-visibility:hidden]
+                    rounded-xl overflow-hidden
+                    bg-muted border
+                    flex items-center justify-center
+                `}>
+                    <img 
+                        src="https://ucarecdn.com/5cf6ac7c-31a3-461e-8011-2e05eea0420e/-/preview/360x640/" 
+                        alt="Reverso de carta"
+                        className="w-100 h-100 object-contain" 
+                    />
                 </CardContent>
             </Card>
-        </>
+        </div>
     )
 
 }
